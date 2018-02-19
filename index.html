@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Arbetsprov</title>
+
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="search-app">
+        <header>
+            <img src="./UI/assets/logo.svg" alt="Searq">
+        </header>
+
+        <form id="search-form">
+            <input id="search-input" type="text" placeholder="Search for something..." autocomplete="off" />
+        </form>
+
+        <div class="list-wrapper">
+            <ul id="results-list" class="results-list"></ul> <!-- Will be populated by JavaScript -->
+            <ul id="items-list" class="items-list"></ul> <!-- Will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
