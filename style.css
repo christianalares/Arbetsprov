@@ -91,7 +91,6 @@ body {
 ----------------------------------------*/
 /* UL */
 .items-list {
-	display: none;
 	position: absolute;
 	top: 10px;
 	padding: 20px 0;
@@ -155,14 +154,12 @@ body {
 ----------------------------------------*/
 /* UL */
 .results-list {
-	opacity: 0;
 	background-color: #243b5d;
 	position: absolute;
 	top: 10px;
 	width: 100%;
 	z-index: 2;
 	padding: 10px;
-	transition: opacity .3s;
 }
 	.results-list li {
 		margin: 10px 0;
@@ -178,3 +175,7 @@ body {
 		padding: 0;
 		margin: 0;
 	}
+
+.hidden {
+	display: none;
+}

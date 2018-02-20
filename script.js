@@ -24,13 +24,13 @@ class SearchApp {
 	}
 
 	// Some helper functions to show/hide things
-	showItemsList() { this._itemsList.style.display = 'block' }
-	hideItemsList() { this._itemsList.style.display = 'none' }
+	showItemsList() { this._itemsList.classList.remove('hidden') }
+	hideItemsList() { this._itemsList.classList.add('hidden') }
 	
-	showResultsList() { this._resultsList.style.opacity = '1' }
-	hideResultsList() { this._resultsList.style.opacity = '0' }
+	showResultsList() { this._resultsList.classList.remove('hidden') }
+	hideResultsList() { this._resultsList.classList.add('hidden') }
 
-	resultListIsShown() { return this._resultsList.style.opacity === '1' }
+	resultListIsHidden() { return this._resultsList.classList.contains('hidden') }
 
 	bindEvents() {
 		let timer
@@ -54,13 +54,13 @@ class SearchApp {
 		})
 
 		window.addEventListener('keydown', (e) => {
-			if(e.key === 'Escape' && this.resultListIsShown()) {
+			if(e.key === 'Escape' && !this.resultListIsHidden()) {
 				this.cancelSearch()
 			}
 		})
 
 		window.addEventListener('click', (e) => {
-			if(this.resultListIsShown()) {
+			if(!this.resultListIsHidden()) {
 				const resultListWasClicked = e.path.filter(elem => {
 					return elem.id === 'results-list'
 				}).length > 0
@@ -86,16 +86,16 @@ class SearchApp {
 		this._form.addEventListener('submit', (e) => {
 			e.preventDefault()
 
-			console.log( this.searchResults[this.selectedResultIndex] )
+			if(!this.resultListIsHidden()) {
+				// Get the selected item from the search results
+				this.addToList(this.searchResults[this.selectedResultIndex])
 
-			// Get the selected item from the search results
-			this.addToList(this.searchResults[this.selectedResultIndex])
+				// Cancel search
+				this.cancelSearch()
 
-			// Cancel search
-			this.cancelSearch()
-
-			// Render the saved items
-			this.renderItemsList()
+				// Render the saved items
+				this.renderItemsList()
+			}
 		})
 
 		// When clicking on a list item, look for if the button was clicked
@@ -117,7 +117,6 @@ class SearchApp {
 	cancelSearch() {
 		this.hideResultsList()
 		this._searchInput.value = ''
-		this.searchResults = []
 		this.selectedResultIndex = 0
 		this._cachedResult = null
 	}
@@ -132,6 +131,11 @@ class SearchApp {
 	removeFromList(index) {
 		this.itemsList.splice(index, 1)
 		this.renderItemsList()
+
+		// Hide the div if there are no results to display
+		if(this.itemsList.length === 0) {
+			this.hideItemsList()
+		}
 	}
 
 	renderItemsList() {
