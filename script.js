@@ -30,6 +30,8 @@ class SearchApp {
 	showResultsList() { this._resultsList.style.opacity = '1' }
 	hideResultsList() { this._resultsList.style.opacity = '0' }
 
+	resultListIsShown() { return this._resultsList.style.opacity === '1' }
+
 	bindEvents() {
 		let timer
 		this._searchInput.addEventListener('keydown', (e) => {
@@ -51,17 +53,46 @@ class SearchApp {
 			}
 		})
 
-		// When we press enter
+		window.addEventListener('keydown', (e) => {
+			if(e.key === 'Escape' && this.resultListIsShown()) {
+				this.cancelSearch()
+			}
+		})
+
+		window.addEventListener('click', (e) => {
+			if(this.resultListIsShown()) {
+				const resultListWasClicked = e.path.filter(elem => {
+					return elem.id === 'results-list'
+				}).length > 0
+
+				if(!resultListWasClicked) {
+					this.cancelSearch()
+				}
+			}
+		})
+
+		this._resultsList.addEventListener('click', (e) => {
+			if(e.target.tagName.toLowerCase() === 'li') {
+				const index = parseInt( e.target.getAttribute('data-index') )
+				this.selectedResultIndex = index
+				
+				this.addToList(this.searchResults[this.selectedResultIndex])
+				this.cancelSearch()
+				this.renderItemsList()
+			}
+		})
+
+		// When we press enter (eg. submit the form)
 		this._form.addEventListener('submit', (e) => {
 			e.preventDefault()
+
+			console.log( this.searchResults[this.selectedResultIndex] )
 
 			// Get the selected item from the search results
 			this.addToList(this.searchResults[this.selectedResultIndex])
 
-			// Hide the results and empty the input field
-			this.hideResultsList()
-			this._searchInput.value = ''
-			this.selectedResultIndex = 0
+			// Cancel search
+			this.cancelSearch()
 
 			// Render the saved items
 			this.renderItemsList()
@@ -81,6 +112,14 @@ class SearchApp {
 				this.removeFromList(index)
 			}
 		})
+	}
+
+	cancelSearch() {
+		this.hideResultsList()
+		this._searchInput.value = ''
+		this.searchResults = []
+		this.selectedResultIndex = 0
+		this._cachedResult = null
 	}
 
 	addToList(item) {
@@ -170,7 +209,7 @@ class SearchApp {
 	buildHTML() {
 		let html = ''
 		this.searchResults.forEach((result, i) => {
-			html += `<li ${this.selectedResultIndex === i ? 'class="selected"' : ''}>${result.artistName} - ${result.trackName}</li>`
+			html += `<li data-index=${i} ${this.selectedResultIndex === i ? 'class="selected"' : ''}>${result.artistName} - ${result.trackName}</li>`
 		})
 		this._resultsList.innerHTML = `<h2>Sökresultat</h2>${html}`
 	}

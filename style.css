@@ -167,7 +167,9 @@ body {
 	.results-list li {
 		margin: 10px 0;
 	}
+	.results-list li:hover,
 	.results-list li.selected {
+		cursor: pointer;
 		font-weight: 400;
 		text-decoration: underline;
 	}
